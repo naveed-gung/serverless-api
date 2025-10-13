@@ -2,6 +2,8 @@
 
 <div align="center">
 
+![Project Banner](image.png)
+
 ![Tech Stack](https://skillicons.dev/icons?i=aws,nodejs,dynamodb,github,docker&theme=dark)
 
 <svg width="800" height="120" xmlns="http://www.w3.org/2000/svg">

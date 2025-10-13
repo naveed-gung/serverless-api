@@ -1,0 +1,399 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Enterprise Serverless Image Processing API
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs18.x
+    Tracing: Active
+    Environment:
+      Variables:
+        STAGE: !Ref Stage
+        IMAGE_BUCKET: !Ref ImageBucket
+        DYNAMODB_TABLE: !Ref ImageMetadataTable
+        LOG_LEVEL: info
+    Layers:
+      - !Ref CommonLayer
+
+Parameters:
+  Stage:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: Deployment stage
+
+  AllowedOrigins:
+    Type: String
+    Default: '*'
+    Description: CORS allowed origins
+
+Resources:
+  # API Gateway
+  ImageProcessingApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub '${AWS::StackName}-api'
+      StageName: !Ref Stage
+      TracingEnabled: true
+      Cors:
+        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+        AllowHeaders: "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: !Sub "'${AllowedOrigins}'"
+      Auth:
+        ApiKeyRequired: true
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          UsagePlanName: !Sub '${AWS::StackName}-usage-plan'
+          Quota:
+            Limit: 10000
+            Period: MONTH
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
+      DefinitionBody:
+        openapi: '3.0.0'
+        info:
+          title: Image Processing API
+          version: '1.0'
+        paths:
+          /upload:
+            post:
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UploadFunction.Arn}/invocations'
+          /images:
+            get:
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListImagesFunction.Arn}/invocations'
+          /images/{id}:
+            get:
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetImageFunction.Arn}/invocations'
+            delete:
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeleteImageFunction.Arn}/invocations'
+          /process:
+            post:
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ProcessImageFunction.Arn}/invocations'
+          /status/{jobId}:
+            get:
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetJobStatusFunction.Arn}/invocations'
+
+  # Lambda Functions
+  UploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-upload'
+      CodeUri: src/functions/upload/
+      Handler: index.handler
+      Description: Handle image upload to S3
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref ImageBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ImageMetadataTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ImageProcessingApi
+            Path: /upload
+            Method: POST
+
+  ListImagesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-list'
+      CodeUri: src/functions/list/
+      Handler: index.handler
+      Description: List all images for a user
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ImageMetadataTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ImageProcessingApi
+            Path: /images
+            Method: GET
+
+  GetImageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-get'
+      CodeUri: src/functions/get/
+      Handler: index.handler
+      Description: Get image details and signed URL
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ImageMetadataTable
+        - S3ReadPolicy:
+            BucketName: !Ref ImageBucket
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ImageProcessingApi
+            Path: /images/{id}
+            Method: GET
+
+  DeleteImageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-delete'
+      CodeUri: src/functions/delete/
+      Handler: index.handler
+      Description: Delete image from S3 and DynamoDB
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref ImageBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ImageMetadataTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ImageProcessingApi
+            Path: /images/{id}
+            Method: DELETE
+
+  ProcessImageFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-process'
+      CodeUri: src/functions/process/
+      Handler: index.handler
+      Description: Process images asynchronously
+      Timeout: 300
+      MemorySize: 1024
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref ImageBucket
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ImageMetadataTable
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt ProcessingQueue.QueueName
+        - RekognitionDetectOnlyPolicy: {}
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt ProcessingQueue.Arn
+            BatchSize: 10
+
+  GetJobStatusFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub '${AWS::StackName}-status'
+      CodeUri: src/functions/status/
+      Handler: index.handler
+      Description: Get processing job status
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ImageMetadataTable
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ImageProcessingApi
+            Path: /status/{jobId}
+            Method: GET
+
+  # Lambda Layer for common dependencies
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub '${AWS::StackName}-common-layer'
+      Description: Common dependencies and utilities
+      ContentUri: src/layers/common/
+      CompatibleRuntimes:
+        - nodejs18.x
+      RetentionPolicy: Delete
+
+  # S3 Bucket for images
+  ImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${AWS::StackName}-images-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldImages
+            Status: Enabled
+            ExpirationInDays: 90
+          - Id: TransitionToIA
+            Status: Enabled
+            Transitions:
+              - TransitionInDays: 30
+                StorageClass: STANDARD_IA
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+            AllowedHeaders:
+              - '*'
+
+  # DynamoDB Table for image metadata
+  ImageMetadataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub '${AWS::StackName}-images'
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: imageId
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: N
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: imageId
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: StatusIndex
+          KeySchema:
+            - AttributeName: status
+              KeyType: HASH
+            - AttributeName: createdAt
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      TimeToLiveSpecification:
+        Enabled: true
+        AttributeName: ttl
+      Tags:
+        - Key: Environment
+          Value: !Ref Stage
+
+  # SQS Queue for async processing
+  ProcessingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub '${AWS::StackName}-processing-queue'
+      VisibilityTimeout: 300
+      MessageRetentionPeriod: 1209600
+      ReceiveMessageWaitTimeSeconds: 20
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ProcessingDLQ.Arn
+        maxReceiveCount: 3
+
+  # Dead Letter Queue
+  ProcessingDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub '${AWS::StackName}-processing-dlq'
+      MessageRetentionPeriod: 1209600
+
+  # CloudWatch Log Groups
+  UploadFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${UploadFunction}'
+      RetentionInDays: 7
+
+  ProcessFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${ProcessImageFunction}'
+      RetentionInDays: 7
+
+  # CloudWatch Alarms
+  UploadFunctionErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${AWS::StackName}-upload-errors'
+      AlarmDescription: Alert when upload function has errors
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 5
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref UploadFunction
+
+  DLQAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub '${AWS::StackName}-dlq-messages'
+      AlarmDescription: Alert when messages in DLQ
+      MetricName: ApproximateNumberOfMessagesVisible
+      Namespace: AWS/SQS
+      Statistic: Sum
+      Period: 300
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Dimensions:
+        - Name: QueueName
+          Value: !GetAtt ProcessingDLQ.QueueName
+
+Outputs:
+  ApiUrl:
+    Description: API Gateway endpoint URL
+    Value: !Sub 'https://${ImageProcessingApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}'
+    Export:
+      Name: !Sub '${AWS::StackName}-ApiUrl'
+
+  ImageBucketName:
+    Description: S3 bucket for images
+    Value: !Ref ImageBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-ImageBucket'
+
+  ImageTableName:
+    Description: DynamoDB table name
+    Value: !Ref ImageMetadataTable
+    Export:
+      Name: !Sub '${AWS::StackName}-ImageTable'
+
+  ProcessingQueueUrl:
+    Description: SQS queue URL for processing
+    Value: !Ref ProcessingQueue
+    Export:
+      Name: !Sub '${AWS::StackName}-QueueUrl'
+
+  ApiKey:
+    Description: API Key for authentication
+    Value: !Sub 'Get from AWS Console: API Gateway > API Keys'

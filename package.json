@@ -1,0 +1,53 @@
+{
+  "name": "serverless-image-processing-api",
+  "version": "1.0.0",
+  "description": "Enterprise Serverless Image Processing API with AWS Lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:integration": "jest --testPathPattern=integration",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.js\"",
+    "local": "sam local start-api --port 3000",
+    "build": "sam build",
+    "deploy:dev": "sam deploy --config-env dev",
+    "deploy:staging": "sam deploy --config-env staging",
+    "deploy:prod": "sam deploy --config-env prod --guided",
+    "validate": "sam validate",
+    "logs": "sam logs --stack-name image-processing-api --tail"
+  },
+  "keywords": [
+    "serverless",
+    "aws-lambda",
+    "image-processing",
+    "api-gateway",
+    "dynamodb",
+    "s3"
+  ],
+  "author": "DevOps Portfolio",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.470.0",
+    "@aws-sdk/client-rekognition": "^3.470.0",
+    "@aws-sdk/client-s3": "^3.470.0",
+    "@aws-sdk/client-sqs": "^3.470.0",
+    "@aws-sdk/lib-dynamodb": "^3.470.0",
+    "@aws-sdk/s3-request-presigner": "^3.470.0",
+    "sharp": "^0.33.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "aws-sdk-client-mock": "^3.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "jest": "^29.7.0",
+    "prettier": "^3.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

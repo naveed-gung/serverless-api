@@ -12,6 +12,18 @@ const BUCKET_NAME = process.env.IMAGE_BUCKET;
 const TABLE_NAME = process.env.DYNAMODB_TABLE;
 
 /**
+ * CORS headers helper function
+ */
+function corsHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
+  };
+}
+
+/**
  * Lambda handler for image upload
  * Generates pre-signed URL for direct S3 upload
  */
@@ -21,7 +33,9 @@ exports.handler = async (event) => {
   try {
     // Parse request body
     const body = JSON.parse(event.body || '{}');
-    const { fileName, fileType, userId = 'anonymous', metadata = {} } = body;
+    const {
+      fileName, fileType, userId = 'anonymous', metadata = {}
+    } = body;
 
     // Validation
     if (!fileName || !fileType) {
@@ -101,7 +115,6 @@ exports.handler = async (event) => {
         }
       })
     };
-
   } catch (error) {
     console.error('Upload error:', error);
     return {
@@ -115,12 +128,3 @@ exports.handler = async (event) => {
     };
   }
 };
-
-function corsHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
-  };
-}

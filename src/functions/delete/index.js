@@ -10,6 +10,18 @@ const BUCKET_NAME = process.env.IMAGE_BUCKET;
 const TABLE_NAME = process.env.DYNAMODB_TABLE;
 
 /**
+ * CORS headers helper function
+ */
+function corsHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DELETE',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
+  };
+}
+
+/**
  * Lambda handler to delete an image
  */
 exports.handler = async (event) => {
@@ -54,7 +66,7 @@ exports.handler = async (event) => {
 
     // Delete from S3 (original and all processed versions)
     const s3Keys = [image.s3Key];
-    
+
     if (image.processedVersions) {
       s3Keys.push(...Object.values(image.processedVersions));
     }
@@ -64,7 +76,7 @@ exports.handler = async (event) => {
       await s3Client.send(new DeleteObjectsCommand({
         Bucket: BUCKET_NAME,
         Delete: {
-          Objects: s3Keys.map(key => ({ Key: key }))
+          Objects: s3Keys.map((key) => ({ Key: key }))
         }
       }));
     } else {
@@ -97,7 +109,6 @@ exports.handler = async (event) => {
         }
       })
     };
-
   } catch (error) {
     console.error('Delete image error:', error);
     return {
@@ -111,12 +122,3 @@ exports.handler = async (event) => {
     };
   }
 };
-
-function corsHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET,DELETE',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
-  };
-}

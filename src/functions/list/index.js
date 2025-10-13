@@ -7,6 +7,18 @@ const docClient = DynamoDBDocumentClient.from(dynamoClient);
 const TABLE_NAME = process.env.DYNAMODB_TABLE;
 
 /**
+ * CORS headers helper function
+ */
+function corsHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
+  };
+}
+
+/**
  * Lambda handler to list all images for a user
  */
 exports.handler = async (event) => {
@@ -16,7 +28,7 @@ exports.handler = async (event) => {
     // Get user ID from query parameters or default
     const userId = event.queryStringParameters?.userId || 'anonymous';
     const status = event.queryStringParameters?.status;
-    const limit = parseInt(event.queryStringParameters?.limit || '20');
+    const limit = parseInt(event.queryStringParameters?.limit || '20', 10);
     const lastKey = event.queryStringParameters?.lastKey;
 
     // Build query parameters
@@ -46,7 +58,7 @@ exports.handler = async (event) => {
 
     // Prepare response
     const images = result.Items || [];
-    const nextKey = result.LastEvaluatedKey 
+    const nextKey = result.LastEvaluatedKey
       ? Buffer.from(JSON.stringify(result.LastEvaluatedKey)).toString('base64')
       : null;
 
@@ -62,7 +74,6 @@ exports.handler = async (event) => {
         }
       })
     };
-
   } catch (error) {
     console.error('List images error:', error);
     return {
@@ -76,12 +87,3 @@ exports.handler = async (event) => {
     };
   }
 };
-
-function corsHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
-  };
-}

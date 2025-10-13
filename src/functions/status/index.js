@@ -7,6 +7,31 @@ const docClient = DynamoDBDocumentClient.from(dynamoClient);
 const TABLE_NAME = process.env.DYNAMODB_TABLE;
 
 /**
+ * CORS headers helper function
+ */
+function corsHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
+    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
+  };
+}
+
+/**
+ * Get progress percentage based on status
+ */
+function getProgress(status) {
+  const progressMap = {
+    pending: 0,
+    processing: 50,
+    completed: 100,
+    failed: 0
+  };
+  return progressMap[status] || 0;
+}
+
+/**
  * Lambda handler to get job/processing status
  */
 exports.handler = async (event) => {
@@ -79,7 +104,6 @@ exports.handler = async (event) => {
         }
       })
     };
-
   } catch (error) {
     console.error('Get status error:', error);
     return {
@@ -93,22 +117,3 @@ exports.handler = async (event) => {
     };
   }
 };
-
-function getProgress(status) {
-  const progressMap = {
-    'pending': 0,
-    'processing': 50,
-    'completed': 100,
-    'failed': -1
-  };
-  return progressMap[status] || 0;
-}
-
-function corsHeaders() {
-  return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization,X-Api-Key'
-  };
-}

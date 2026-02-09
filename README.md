@@ -1500,30 +1500,34 @@ aws xray batch-get-traces --trace-ids id1 id2
 // Implement structured logging
 const logger = {
   info: (message, metadata) => {
-    console.log(JSON.stringify({
-      level: 'INFO',
-      timestamp: new Date().toISOString(),
-      message,
-      ...metadata
-    }));
+    console.log(
+      JSON.stringify({
+        level: "INFO",
+        timestamp: new Date().toISOString(),
+        message,
+        ...metadata,
+      }),
+    );
   },
   error: (message, error, metadata) => {
-    console.error(JSON.stringify({
-      level: 'ERROR',
-      timestamp: new Date().toISOString(),
-      message,
-      error: error.message,
-      stack: error.stack,
-      ...metadata
-    }));
-  }
+    console.error(
+      JSON.stringify({
+        level: "ERROR",
+        timestamp: new Date().toISOString(),
+        message,
+        error: error.message,
+        stack: error.stack,
+        ...metadata,
+      }),
+    );
+  },
 };
 
 // Usage
-logger.info('Image uploaded', {
-  imageId: 'abc123',
-  fileName: 'photo.jpg',
-  size: 245760
+logger.info("Image uploaded", {
+  imageId: "abc123",
+  fileName: "photo.jpg",
+  size: 245760,
 });
 ```
 
@@ -1619,11 +1623,7 @@ ProcessFunction:
 
 ```javascript
 // Use async/await properly
-await Promise.all([
-  generateThumbnail(),
-  convertToWebP(),
-  analyzeWithAI()
-]);
+await Promise.all([generateThumbnail(), convertToWebP(), analyzeWithAI()]);
 ```
 
 3. **Split into smaller functions:**

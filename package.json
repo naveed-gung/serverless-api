@@ -26,7 +26,12 @@
     "dynamodb",
     "s3"
   ],
-  "author": "DevOps Portfolio",
+  "author": "Naveed Gung (https://naveed-gung.dev)",
+  "homepage": "https://naveed-gung.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naveed-gung/serverless-api"
+  },
   "license": "MIT",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.470.0",

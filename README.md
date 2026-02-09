@@ -112,6 +112,7 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 <td width="50%">
 
 ### 🖼️ Image Processing
+
 - **Pre-signed URL uploads** for secure S3 access
 - **Automatic thumbnail generation** (multiple sizes)
 - **WebP conversion** for 30-50% size reduction
@@ -122,6 +123,7 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 <td width="50%">
 
 ### 🤖 AI-Powered Analysis
+
 - **Object detection** with confidence scores
 - **Scene classification** (outdoor, indoor, etc.)
 - **Label identification** (person, car, building)
@@ -134,6 +136,7 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 <td width="50%">
 
 ### 💾 Storage & Database
+
 - **S3** with encryption at rest
 - **DynamoDB** for fast metadata queries
 - **Global Secondary Indexes** for efficient lookups
@@ -144,6 +147,7 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 <td width="50%">
 
 ### ⚡ Async Processing
+
 - **SQS queues** for background jobs
 - **Dead Letter Queue** for failure handling
 - **Exponential backoff** retry logic
@@ -156,6 +160,7 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 <td width="50%">
 
 ### 🔒 Security Features
+
 - **API Gateway** with API key authentication
 - **Usage plans** and rate limiting
 - **IAM least privilege** policies
@@ -166,6 +171,7 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 <td width="50%">
 
 ### 📊 Monitoring & Observability
+
 - **CloudWatch Logs** with structured logging
 - **X-Ray tracing** for distributed debugging
 - **Custom metrics** and dashboards
@@ -184,16 +190,16 @@ A **production-grade serverless image processing platform** built on AWS Lambda 
 
 <div align="center">
 
-| Service | Purpose | Badge |
-|---------|---------|-------|
-| **Lambda** | Serverless compute | ![Lambda](https://img.shields.io/badge/Lambda-Functions-FF9900?style=flat-square&logo=aws-lambda&logoColor=white) |
-| **API Gateway** | REST API management | ![API Gateway](https://img.shields.io/badge/API_Gateway-REST-FF9900?style=flat-square&logo=amazon-api-gateway&logoColor=white) |
-| **S3** | Object storage | ![S3](https://img.shields.io/badge/S3-Storage-569A31?style=flat-square&logo=amazon-s3&logoColor=white) |
-| **DynamoDB** | NoSQL database | ![DynamoDB](https://img.shields.io/badge/DynamoDB-NoSQL-4053D6?style=flat-square&logo=amazon-dynamodb&logoColor=white) |
-| **SQS** | Message queuing | ![SQS](https://img.shields.io/badge/SQS-Queue-FF4F8B?style=flat-square&logo=amazon-sqs&logoColor=white) |
-| **Rekognition** | AI vision analysis | ![Rekognition](https://img.shields.io/badge/Rekognition-AI-FF9900?style=flat-square&logo=amazon-aws&logoColor=white) |
-| **CloudWatch** | Logging & monitoring | ![CloudWatch](https://img.shields.io/badge/CloudWatch-Logs-FF4F8B?style=flat-square&logo=amazon-cloudwatch&logoColor=white) |
-| **X-Ray** | Distributed tracing | ![X-Ray](https://img.shields.io/badge/X--Ray-Tracing-FF9900?style=flat-square&logo=amazon-aws&logoColor=white) |
+| Service         | Purpose              | Badge                                                                                                                          |
+| --------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| **Lambda**      | Serverless compute   | ![Lambda](https://img.shields.io/badge/Lambda-Functions-FF9900?style=flat-square&logo=aws-lambda&logoColor=white)              |
+| **API Gateway** | REST API management  | ![API Gateway](https://img.shields.io/badge/API_Gateway-REST-FF9900?style=flat-square&logo=amazon-api-gateway&logoColor=white) |
+| **S3**          | Object storage       | ![S3](https://img.shields.io/badge/S3-Storage-569A31?style=flat-square&logo=amazon-s3&logoColor=white)                         |
+| **DynamoDB**    | NoSQL database       | ![DynamoDB](https://img.shields.io/badge/DynamoDB-NoSQL-4053D6?style=flat-square&logo=amazon-dynamodb&logoColor=white)         |
+| **SQS**         | Message queuing      | ![SQS](https://img.shields.io/badge/SQS-Queue-FF4F8B?style=flat-square&logo=amazon-sqs&logoColor=white)                        |
+| **Rekognition** | AI vision analysis   | ![Rekognition](https://img.shields.io/badge/Rekognition-AI-FF9900?style=flat-square&logo=amazon-aws&logoColor=white)           |
+| **CloudWatch**  | Logging & monitoring | ![CloudWatch](https://img.shields.io/badge/CloudWatch-Logs-FF4F8B?style=flat-square&logo=amazon-cloudwatch&logoColor=white)    |
+| **X-Ray**       | Distributed tracing  | ![X-Ray](https://img.shields.io/badge/X--Ray-Tracing-FF9900?style=flat-square&logo=amazon-aws&logoColor=white)                 |
 
 </div>
 
@@ -217,11 +223,11 @@ graph TB
     subgraph "Client Layer"
         Client[🌐 Web/Mobile Client]
     end
-    
+
     subgraph "API Layer"
         APIGW[🚪 API Gateway<br/>REST API + API Keys<br/>Rate Limiting]
     end
-    
+
     subgraph "Lambda Functions"
         Upload[📤 Upload Function<br/>Pre-signed URLs]
         List[📋 List Function<br/>Query Images]
@@ -230,65 +236,65 @@ graph TB
         Process[⚙️ Process Function<br/>AI Analysis]
         Status[📊 Status Function<br/>Check Progress]
     end
-    
+
     subgraph "Storage & Database"
         S3[🗄️ S3 Bucket<br/>Image Storage<br/>Encryption + Lifecycle]
         DDB[(💾 DynamoDB<br/>Metadata + GSI<br/>TTL Cleanup)]
     end
-    
+
     subgraph "Message Queue"
         SQS[📨 SQS Queue<br/>Async Processing<br/>Retry Logic]
         DLQ[⚠️ Dead Letter Queue<br/>Failed Messages]
     end
-    
+
     subgraph "AI Services"
         Rekog[🤖 AWS Rekognition<br/>Object Detection<br/>Label Analysis]
     end
-    
+
     subgraph "Monitoring & Observability"
         CW[📈 CloudWatch<br/>Logs + Metrics<br/>Alarms]
         XRay[🔎 X-Ray<br/>Distributed Tracing<br/>Performance Insights]
     end
-    
+
     Client -->|HTTPS| APIGW
     APIGW --> Upload
     APIGW --> List
     APIGW --> Get
     APIGW --> Delete
     APIGW --> Status
-    
+
     Upload --> S3
     Upload --> DDB
     Upload --> SQS
-    
+
     List --> DDB
     Get --> S3
     Get --> DDB
     Delete --> S3
     Delete --> DDB
-    
+
     SQS --> Process
     Process --> S3
     Process --> DDB
     Process --> Rekog
-    
+
     SQS -.❌ Failures.-> DLQ
     Status --> DDB
-    
+
     Upload --> CW
     List --> CW
     Get --> CW
     Delete --> CW
     Process --> CW
     Status --> CW
-    
+
     Upload --> XRay
     List --> XRay
     Get --> XRay
     Delete --> XRay
     Process --> XRay
     Status --> XRay
-    
+
     style APIGW fill:#90ee90,stroke:#333,stroke-width:2px
     style Upload fill:#ffd700,stroke:#333,stroke-width:2px
     style Process fill:#ff6347,stroke:#333,stroke-width:2px
@@ -311,7 +317,7 @@ sequenceDiagram
     participant SQS as 📨 SQS Queue
     participant PF as ⚙️ Process Function
     participant RK as 🤖 Rekognition
-    
+
     C->>AG: POST /images/upload<br/>{fileName: "photo.jpg"}
     AG->>UF: Authenticate & Invoke
     UF->>S3: Generate pre-signed URL
@@ -320,16 +326,16 @@ sequenceDiagram
     UF->>SQS: Enqueue processing job
     UF-->>AG: Return upload details
     AG-->>C: {uploadUrl, imageId, expiresIn}
-    
+
     Note over C,S3: Client uploads directly to S3
     C->>S3: PUT image via pre-signed URL
     S3-->>C: 200 OK - Upload complete
-    
+
     Note over SQS,PF: Async processing begins
     SQS->>PF: Trigger with imageId
     PF->>S3: Download original image
     S3-->>PF: Image binary data
-    
+
     par Parallel Processing
         PF->>PF: Generate thumbnails<br/>(200x200, 400x400)
         PF->>S3: Upload thumbnails
@@ -340,9 +346,9 @@ sequenceDiagram
         PF->>RK: Analyze image content
         RK-->>PF: Labels, objects, scenes
     end
-    
+
     PF->>DDB: Update metadata<br/>(status: completed)
-    
+
     Note over C,AG: Client checks status
     C->>AG: GET /images/{id}/status
     AG->>Status: Check processing status
@@ -359,7 +365,7 @@ graph LR
     subgraph "Input"
         IMG[📷 Raw Image<br/>JPEG/PNG]
     end
-    
+
     subgraph "Processing Pipeline"
         VAL[✅ Validation<br/>Size/Format]
         THUMB[🖼️ Thumbnail<br/>Generation]
@@ -367,35 +373,35 @@ graph LR
         META[📝 Metadata<br/>Extraction]
         AI[🤖 AI<br/>Analysis]
     end
-    
+
     subgraph "Storage"
         S3O[Original<br/>images/original/]
         S3T[Thumbnails<br/>images/thumbnails/]
         S3W[WebP<br/>images/webp/]
         DBMETA[(DynamoDB<br/>Metadata)]
     end
-    
+
     subgraph "Output"
         API[🌐 API Response<br/>URLs + Metadata]
     end
-    
+
     IMG --> VAL
     VAL --> THUMB
     VAL --> WEBP
     VAL --> META
     VAL --> AI
-    
+
     THUMB --> S3T
     WEBP --> S3W
     VAL --> S3O
     META --> DBMETA
     AI --> DBMETA
-    
+
     S3O --> API
     S3T --> API
     S3W --> API
     DBMETA --> API
-    
+
     style IMG fill:#e1f5ff
     style VAL fill:#fff4e1
     style THUMB fill:#e1ffe1
@@ -470,13 +476,13 @@ Before you begin, ensure you have the following installed and configured:
 
 ### Required Tools
 
-| Tool | Version | Installation |
-|------|---------|--------------|
-| **AWS CLI** | 2.x | [Install Guide](https://aws.amazon.com/cli/) |
-| **AWS SAM CLI** | 1.x | [Install Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) |
-| **Node.js** | 18.x or higher | [Download](https://nodejs.org/) |
-| **Docker** | Latest | [Get Docker](https://www.docker.com/get-started) |
-| **Git** | Latest | [Download](https://git-scm.com/) |
+| Tool            | Version        | Installation                                                                                                         |
+| --------------- | -------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **AWS CLI**     | 2.x            | [Install Guide](https://aws.amazon.com/cli/)                                                                         |
+| **AWS SAM CLI** | 1.x            | [Install Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) |
+| **Node.js**     | 18.x or higher | [Download](https://nodejs.org/)                                                                                      |
+| **Docker**      | Latest         | [Get Docker](https://www.docker.com/get-started)                                                                     |
+| **Git**         | Latest         | [Download](https://git-scm.com/)                                                                                     |
 
 ### AWS Account Requirements
 
@@ -493,16 +499,19 @@ Before you begin, ensure you have the following installed and configured:
 ### Installation Commands
 
 **macOS (Homebrew):**
+
 ```bash
 brew install awscli aws-sam-cli node docker
 ```
 
 **Windows (Chocolatey):**
+
 ```bash
 choco install awscli aws-sam-cli nodejs docker-desktop
 ```
 
 **Linux (Ubuntu/Debian):**
+
 ```bash
 # AWS CLI
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -590,6 +599,7 @@ sam deploy --guided
 ```
 
 **Expected Output:**
+
 ```
 CloudFormation outputs from deployed stack
 ---------------------------------------------------------------------------
@@ -655,6 +665,7 @@ Generate a pre-signed URL for direct S3 upload.
 **Endpoint:** `POST /images/upload`
 
 **Request:**
+
 ```json
 {
   "fileName": "vacation-photo.jpg"
@@ -662,6 +673,7 @@ Generate a pre-signed URL for direct S3 upload.
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "uploadUrl": "https://bucket-name.s3.amazonaws.com/...",
@@ -672,6 +684,7 @@ Generate a pre-signed URL for direct S3 upload.
 ```
 
 **Usage Example:**
+
 ```bash
 # Step 1: Get upload URL
 RESPONSE=$(curl -X POST $API_URL/images/upload \
@@ -697,15 +710,18 @@ Retrieve paginated list of uploaded images.
 **Endpoint:** `GET /images`
 
 **Query Parameters:**
+
 - `limit` (optional): Number of results (default: 10, max: 100)
 - `lastKey` (optional): Pagination token from previous response
 
 **Request:**
+
 ```bash
 GET /images?limit=20&lastKey=abc123
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "images": [
@@ -737,6 +753,7 @@ Retrieve complete metadata for a specific image.
 **Endpoint:** `GET /images/{imageId}`
 
 **Response (200 OK):**
+
 ```json
 {
   "imageId": "550e8400-e29b-41d4-a716-446655440000",
@@ -764,10 +781,10 @@ Retrieve complete metadata for a specific image.
   },
   "aiAnalysis": {
     "labels": [
-      {"name": "Beach", "confidence": 98.5},
-      {"name": "Ocean", "confidence": 97.2},
-      {"name": "Sunset", "confidence": 95.8},
-      {"name": "Person", "confidence": 93.4}
+      { "name": "Beach", "confidence": 98.5 },
+      { "name": "Ocean", "confidence": 97.2 },
+      { "name": "Sunset", "confidence": 95.8 },
+      { "name": "Person", "confidence": 93.4 }
     ],
     "scenes": ["Outdoor", "Nature"],
     "moderationLabels": []
@@ -800,6 +817,7 @@ Remove an image and all associated data.
 **Endpoint:** `DELETE /images/{imageId}`
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "Image deleted successfully",
@@ -822,6 +840,7 @@ Monitor the progress of image processing.
 **Endpoint:** `GET /images/{imageId}/status`
 
 **Response (200 OK):**
+
 ```json
 {
   "imageId": "550e8400-e29b-41d4-a716-446655440000",
@@ -829,16 +848,20 @@ Monitor the progress of image processing.
   "progress": 65,
   "currentStep": "ai-analysis",
   "steps": {
-    "upload": {"status": "completed", "timestamp": "2025-10-13T14:30:00Z"},
-    "thumbnail": {"status": "completed", "timestamp": "2025-10-13T14:30:15Z"},
-    "webp": {"status": "completed", "timestamp": "2025-10-13T14:30:30Z"},
-    "ai-analysis": {"status": "in-progress", "timestamp": "2025-10-13T14:30:45Z"}
+    "upload": { "status": "completed", "timestamp": "2025-10-13T14:30:00Z" },
+    "thumbnail": { "status": "completed", "timestamp": "2025-10-13T14:30:15Z" },
+    "webp": { "status": "completed", "timestamp": "2025-10-13T14:30:30Z" },
+    "ai-analysis": {
+      "status": "in-progress",
+      "timestamp": "2025-10-13T14:30:45Z"
+    }
   },
   "estimatedCompletion": "2025-10-13T14:31:00Z"
 }
 ```
 
 **Status Values:**
+
 - `pending`: Upload initiated, processing not started
 - `processing`: Image is being processed
 - `completed`: All processing steps completed successfully
@@ -848,17 +871,17 @@ Monitor the progress of image processing.
 
 ### 📄 API Response Codes
 
-| Code | Status | Description |
-|------|--------|-------------|
-| 200 | OK | Request successful |
-| 201 | Created | Resource created successfully |
-| 400 | Bad Request | Invalid request parameters |
-| 401 | Unauthorized | Missing or invalid API key |
-| 403 | Forbidden | Access denied or rate limit exceeded |
-| 404 | Not Found | Resource not found |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server-side error |
-| 503 | Service Unavailable | Temporary service outage |
+| Code | Status                | Description                          |
+| ---- | --------------------- | ------------------------------------ |
+| 200  | OK                    | Request successful                   |
+| 201  | Created               | Resource created successfully        |
+| 400  | Bad Request           | Invalid request parameters           |
+| 401  | Unauthorized          | Missing or invalid API key           |
+| 403  | Forbidden             | Access denied or rate limit exceeded |
+| 404  | Not Found             | Resource not found                   |
+| 429  | Too Many Requests     | Rate limit exceeded                  |
+| 500  | Internal Server Error | Server-side error                    |
+| 503  | Service Unavailable   | Temporary service outage             |
 
 ---
 
@@ -883,6 +906,7 @@ npm test -- upload.test.js
 ```
 
 **Expected Output:**
+
 ```
  PASS  tests/unit/upload.test.js
  PASS  tests/unit/list.test.js
@@ -958,7 +982,7 @@ graph LR
     I --> J
     J --> K[📊 Smoke Tests]
     K --> L[✉️ Notifications]
-    
+
     style B fill:#ffd700
     style C fill:#87ceeb
     style D fill:#90ee90
@@ -969,6 +993,7 @@ graph LR
 ### Pipeline Stages
 
 **1. Code Quality**
+
 ```yaml
 - ESLint checks
 - Prettier formatting
@@ -977,6 +1002,7 @@ graph LR
 ```
 
 **2. Testing**
+
 ```yaml
 - Unit tests with Jest
 - Code coverage reporting (>80% required)
@@ -985,6 +1011,7 @@ graph LR
 ```
 
 **3. Build**
+
 ```yaml
 - SAM build
 - Layer packaging
@@ -993,6 +1020,7 @@ graph LR
 ```
 
 **4. Deployment**
+
 ```yaml
 - Dev: Auto-deploy on dev branch
 - Staging: Auto-deploy on staging branch
@@ -1000,6 +1028,7 @@ graph LR
 ```
 
 **5. Post-Deployment**
+
 ```yaml
 - Smoke tests
 - Health checks
@@ -1014,6 +1043,7 @@ graph LR
 Navigate to: `Repository → Settings → Secrets → Actions`
 
 Add the following secrets:
+
 - `AWS_ACCESS_KEY_ID`: Your AWS access key
 - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
 - `AWS_REGION`: Deployment region (e.g., us-east-1)
@@ -1050,7 +1080,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Run tests
         run: npm test
-  
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
@@ -1172,22 +1202,22 @@ Environment:
     # Storage
     BUCKET_NAME: !Ref ImageBucket
     TABLE_NAME: !Ref ImageTable
-    
+
     # Queue
     QUEUE_URL: !Ref ProcessingQueue
     DLQ_URL: !Ref DeadLetterQueue
-    
+
     # AI Services
     REKOGNITION_ROLE_ARN: !GetAtt RekognitionRole.Arn
-    
+
     # Configuration
     LOG_LEVEL: INFO
-    MAX_IMAGE_SIZE: 10485760  # 10MB
+    MAX_IMAGE_SIZE: 10485760 # 10MB
     THUMBNAIL_SIZES: "200x200,400x400,800x800"
     ENABLE_AI_ANALYSIS: true
-    
+
     # URLs
-    PRESIGNED_URL_EXPIRY: 3600  # 1 hour
+    PRESIGNED_URL_EXPIRY: 3600 # 1 hour
 ```
 
 ### API Configuration
@@ -1241,9 +1271,9 @@ ProcessFunction:
 #### Concurrency Limits
 
 ```yaml
-ReservedConcurrentExecutions: 10  # Reserve capacity
+ReservedConcurrentExecutions: 10 # Reserve capacity
 ProvisionedConcurrencyConfig:
-  ProvisionedConcurrentExecutions: 5  # Keep warm
+  ProvisionedConcurrentExecutions: 5 # Keep warm
 ```
 
 ### S3 Lifecycle Policies
@@ -1289,18 +1319,18 @@ AutoScaling:
 
 <div align="center">
 
-| Service | Usage | Monthly Cost | Annual Cost |
-|---------|-------|--------------|-------------|
-| **Lambda** | 60K invocations @ 1GB | $1.20 | $14.40 |
-| **API Gateway** | 60K requests | $0.06 | $0.72 |
-| **S3 Storage** | 10GB standard | $0.23 | $2.76 |
-| **S3 Requests** | 20K PUT, 40K GET | $0.10 | $1.20 |
-| **DynamoDB** | 100K reads, 50K writes | $0.25 | $3.00 |
-| **SQS** | 20K messages | $0.01 | $0.12 |
-| **Rekognition** | 10K image analysis | $10.00 | $120.00 |
-| **CloudWatch** | Logs & metrics | $0.50 | $6.00 |
-| **Data Transfer** | 5GB outbound | $0.45 | $5.40 |
-| **Total** | | **$12.80** | **$153.60** |
+| Service           | Usage                  | Monthly Cost | Annual Cost |
+| ----------------- | ---------------------- | ------------ | ----------- |
+| **Lambda**        | 60K invocations @ 1GB  | $1.20        | $14.40      |
+| **API Gateway**   | 60K requests           | $0.06        | $0.72       |
+| **S3 Storage**    | 10GB standard          | $0.23        | $2.76       |
+| **S3 Requests**   | 20K PUT, 40K GET       | $0.10        | $1.20       |
+| **DynamoDB**      | 100K reads, 50K writes | $0.25        | $3.00       |
+| **SQS**           | 20K messages           | $0.01        | $0.12       |
+| **Rekognition**   | 10K image analysis     | $10.00       | $120.00     |
+| **CloudWatch**    | Logs & metrics         | $0.50        | $6.00       |
+| **Data Transfer** | 5GB outbound           | $0.45        | $5.40       |
+| **Total**         |                        | **$12.80**   | **$153.60** |
 
 </div>
 
@@ -1351,7 +1381,7 @@ TimeToLiveSpecification:
 ```yaml
 # Enable caching
 CacheClusterEnabled: true
-CacheClusterSize: '0.5'  # GB
+CacheClusterSize: "0.5" # GB
 CacheTtlInSeconds: 300
 
 # Use REST API instead of HTTP API for caching
@@ -1402,13 +1432,13 @@ aws cloudwatch put-dashboard \
 
 **Key Metrics to Monitor:**
 
-| Metric | Threshold | Action |
-|--------|-----------|--------|
-| Lambda Errors | > 1% | Alert + investigate logs |
-| API Latency | > 1000ms | Optimize function |
-| SQS Queue Depth | > 100 | Scale processing |
-| DynamoDB Throttles | > 0 | Increase capacity |
-| S3 4xx Errors | > 5% | Check permissions |
+| Metric             | Threshold | Action                   |
+| ------------------ | --------- | ------------------------ |
+| Lambda Errors      | > 1%      | Alert + investigate logs |
+| API Latency        | > 1000ms  | Optimize function        |
+| SQS Queue Depth    | > 100     | Scale processing         |
+| DynamoDB Throttles | > 0       | Increase capacity        |
+| S3 4xx Errors      | > 5%      | Check permissions        |
 
 ### CloudWatch Alarms
 
@@ -1443,6 +1473,7 @@ Globals:
 ```
 
 **View Traces:**
+
 ```bash
 # Get trace summaries
 aws xray get-trace-summaries \
@@ -1539,11 +1570,13 @@ aws cloudwatch get-metric-statistics \
 #### 🚨 Issue: Deployment Fails with "Resource Already Exists"
 
 **Symptoms:**
+
 ```
 Error: Stack serverless-api already exists
 ```
 
 **Solution:**
+
 ```bash
 # Delete existing stack
 sam delete --stack-name serverless-api
@@ -1557,6 +1590,7 @@ sam deploy --stack-name serverless-api --no-confirm-changeset
 #### 🚨 Issue: Lambda Function Timeout
 
 **Symptoms:**
+
 ```
 Task timed out after 3.00 seconds
 ```
@@ -1564,13 +1598,15 @@ Task timed out after 3.00 seconds
 **Solutions:**
 
 1. **Increase timeout:**
+
 ```yaml
 # template.yaml
 ProcessFunction:
-  Timeout: 300  # 5 minutes
+  Timeout: 300 # 5 minutes
 ```
 
 2. **Optimize function:**
+
 ```javascript
 // Use async/await properly
 await Promise.all([
@@ -1581,6 +1617,7 @@ await Promise.all([
 ```
 
 3. **Split into smaller functions:**
+
 ```yaml
 # Separate thumbnail and AI analysis
 ThumbnailFunction:
@@ -1594,6 +1631,7 @@ AIAnalysisFunction:
 #### 🚨 Issue: API Returns 403 Forbidden
 
 **Symptoms:**
+
 ```json
 {
   "message": "Forbidden"
@@ -1603,6 +1641,7 @@ AIAnalysisFunction:
 **Solutions:**
 
 1. **Verify API key:**
+
 ```bash
 # Get API key value
 aws apigateway get-api-keys --include-values
@@ -1612,6 +1651,7 @@ curl -H "x-api-key: YOUR_ACTUAL_KEY" $API_URL/images
 ```
 
 2. **Check usage plan:**
+
 ```bash
 # Verify API key is associated with usage plan
 aws apigateway get-usage-plans
@@ -1622,12 +1662,14 @@ aws apigateway get-usage-plans
 #### 🚨 Issue: Image Processing Fails
 
 **Symptoms:**
+
 - Images stuck in "pending" status
 - Messages in Dead Letter Queue
 
 **Solutions:**
 
 1. **Check DLQ:**
+
 ```bash
 # Receive messages from DLQ
 aws sqs receive-message \
@@ -1636,6 +1678,7 @@ aws sqs receive-message \
 ```
 
 2. **Review CloudWatch Logs:**
+
 ```bash
 # View Process function logs
 sam logs -n ProcessFunction --tail
@@ -1645,6 +1688,7 @@ sam logs -n ProcessFunction --filter "ERROR"
 ```
 
 3. **Verify IAM permissions:**
+
 ```bash
 # Check function role
 aws iam get-role --role-name ServerlessAPIProcessFunctionRole
@@ -1658,12 +1702,14 @@ aws iam list-attached-role-policies --role-name ServerlessAPIProcessFunctionRole
 #### 🚨 Issue: High Costs
 
 **Symptoms:**
+
 - Unexpected AWS bill
 - High Lambda invocations
 
 **Solutions:**
 
 1. **Analyze costs:**
+
 ```bash
 # Get cost and usage
 aws ce get-cost-and-usage \
@@ -1674,16 +1720,18 @@ aws ce get-cost-and-usage \
 ```
 
 2. **Optimize Lambda:**
+
 ```yaml
 # Reduce memory for lightweight functions
 ListFunction:
-  MemorySize: 256  # Down from 512
+  MemorySize: 256 # Down from 512
 
 # Set reasonable timeouts
-Timeout: 30  # Don't use 300 unless necessary
+Timeout: 30 # Don't use 300 unless necessary
 ```
 
 3. **Enable S3 lifecycle:**
+
 ```yaml
 LifecycleConfiguration:
   Rules:
@@ -1695,6 +1743,7 @@ LifecycleConfiguration:
 #### 🚨 Issue: S3 Access Denied
 
 **Symptoms:**
+
 ```
 AccessDenied: Access Denied
 ```
@@ -1702,11 +1751,13 @@ AccessDenied: Access Denied
 **Solutions:**
 
 1. **Check bucket policy:**
+
 ```bash
 aws s3api get-bucket-policy --bucket your-bucket-name
 ```
 
 2. **Verify Lambda role:**
+
 ```yaml
 Policies:
   - S3CrudPolicy:
@@ -1714,12 +1765,13 @@ Policies:
 ```
 
 3. **Check bucket encryption:**
+
 ```yaml
 # Ensure Lambda role can use KMS key
 BucketEncryption:
   ServerSideEncryptionConfiguration:
     - ServerSideEncryptionByDefault:
-        SSEAlgorithm: AES256  # Or aws:kms
+        SSEAlgorithm: AES256 # Or aws:kms
 ```
 
 ---
@@ -1810,37 +1862,44 @@ We welcome contributions! Please follow these guidelines:
 ### Development Workflow
 
 1. **Fork the repository**
+
 ```bash
 gh repo fork naveed-gung/serverless-api
 ```
 
 2. **Create a feature branch**
+
 ```bash
 git checkout -b feature/amazing-feature
 ```
 
 3. **Make your changes**
+
 - Write clean, documented code
 - Add unit tests for new features
 - Update README if needed
 
 4. **Run tests**
+
 ```bash
 npm test
 npm run lint
 ```
 
 5. **Commit your changes**
+
 ```bash
 git commit -m 'feat: add amazing feature'
 ```
 
 6. **Push to your fork**
+
 ```bash
 git push origin feature/amazing-feature
 ```
 
 7. **Open a Pull Request**
+
 - Provide clear description
 - Link related issues
 - Wait for review
@@ -1856,20 +1915,24 @@ git push origin feature/amazing-feature
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests added/updated
 - [ ] Integration tests passed
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -1907,6 +1970,7 @@ copies or substantial portions of the Software.
 ### Naveed Gung
 
 [![GitHub](https://img.shields.io/badge/GitHub-naveed--gung-181717?style=for-the-badge&logo=github)](https://github.com/naveed-gung)
+[![Portfolio](https://img.shields.io/badge/Portfolio-naveed--gung.dev-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://naveed-gung.dev)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](https://linkedin.com/in/naveed-gung)
 [![Email](https://img.shields.io/badge/Email-Contact-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:naveed@example.com)
 
@@ -1950,18 +2014,21 @@ copies or substantial portions of the Software.
 ## 🗺️ Roadmap
 
 ### Version 2.0 (Q1 2026)
+
 - [ ] Video processing support
 - [ ] GraphQL API option
 - [ ] Multi-tenant support
 - [ ] Advanced analytics dashboard
 
 ### Version 2.1 (Q2 2026)
+
 - [ ] Mobile SDK (iOS/Android)
 - [ ] Real-time notifications (WebSocket)
 - [ ] CDN integration
 - [ ] Advanced caching strategies
 
 ### Version 3.0 (Q3 2026)
+
 - [ ] Machine learning model training
 - [ ] Custom AI models
 - [ ] Blockchain-based verification
@@ -1980,7 +2047,9 @@ copies or substantial portions of the Software.
 
 ---
 
-**© 2025 Naveed Gung. All rights reserved.**
+**© 2026 Naveed Gung. All rights reserved.**
+
+[GitHub](https://github.com/naveed-gung) · [Portfolio](https://naveed-gung.dev)
 
 </div>
     "

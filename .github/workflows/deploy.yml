@@ -1,12 +1,7 @@
 name: Deploy Serverless API
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-  release:
-    types: [created]
+  workflow_dispatch:  # Manual trigger only — won't run automatically
 
 env:
   AWS_REGION: us-east-1
@@ -24,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Setup Python for AWS SAM
@@ -67,7 +62,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -215,7 +211,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci

@@ -965,7 +965,17 @@ artillery quick --count 100 --num 10 $API_URL/images
 
 ### GitHub Actions Workflow
 
-The project includes a fully automated CI/CD pipeline that triggers on every push and pull request.
+The project includes a comprehensive CI/CD pipeline via GitHub Actions.
+
+> **Note:** The workflow is configured with `workflow_dispatch` (manual trigger only) — it does **not** run automatically on push or PR. If you fork/clone this repo and want automatic CI/CD, update the trigger in `.github/workflows/deploy.yml`:
+>
+> ```yaml
+> on:
+>   push:
+>     branches: [main, develop]
+>   pull_request:
+>     branches: [main]
+> ```
 
 ```mermaid
 graph LR
